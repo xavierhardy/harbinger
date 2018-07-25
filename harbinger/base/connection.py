@@ -1,7 +1,7 @@
-
 class Connection(object):
-    def __init__(self, hostname, port=None, username=None, password=None,
-                 timeout=None):
+    def __init__(
+        self, hostname, port=None, username=None, password=None, timeout=None
+    ):
         assert isinstance(hostname, str)
         assert isinstance(port, int) or port is None
         assert isinstance(username, str) or username is None

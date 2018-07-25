@@ -3,7 +3,7 @@
 from harbinger.protocols.telnet import TelnetConnection as SshConnection
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     prompt = "user@localhost:/\$"
     connection_data = {
         "hostname": "localhost",
@@ -39,7 +39,6 @@ if __name__ == '__main__':
 
     print(connection.connected)
     print("done")
-
 
     connection = SshConnection(**connection_data)
     print(connection.connected)

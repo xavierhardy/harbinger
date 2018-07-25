@@ -9,14 +9,28 @@ RSA_KEY_ALGORITHM = 2
 
 
 class BaseSshConnection(ShellConnection):
-    def __init__(self, hostname, port=22, username=None, password=None,
-                 timeout=None, socket_timeout=None, prompt="^.*?@.*?(#|$) ",
-                 buffer_size=DEFAULT_BUFFER_SIZE, public_key_file=None,
-                 private_key_file=None, key_passphrase="",
-                 key_algorithm=GUESS_KEY_ALGORITHM):
+    def __init__(
+        self,
+        hostname,
+        port=22,
+        username=None,
+        password=None,
+        timeout=None,
+        socket_timeout=None,
+        prompt="^.*?@.*?(#|$) ",
+        buffer_size=DEFAULT_BUFFER_SIZE,
+        public_key_file=None,
+        private_key_file=None,
+        key_passphrase="",
+        key_algorithm=GUESS_KEY_ALGORITHM,
+    ):
         super(BaseSshConnection, self).__init__(
-            hostname=hostname, port=port, username=username, password=password,
-            timeout=timeout, buffer_size=buffer_size
+            hostname=hostname,
+            port=port,
+            username=username,
+            password=password,
+            timeout=timeout,
+            buffer_size=buffer_size,
         )
 
         assert isinstance(prompt, str)

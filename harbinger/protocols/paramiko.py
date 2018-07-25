@@ -6,8 +6,11 @@ from paramiko import Transport, RSAKey, DSSKey
 
 from harbinger.base.ssh import BaseSshConnection, DSA_KEY_ALGORITHM
 from harbinger.exceptions import LIBSSH2_ERROR_EAGAIN
-from harbinger.exceptions import ReceiveTimeoutException, SocketTimeoutException, \
-    ReceiveException
+from harbinger.exceptions import (
+    ReceiveTimeoutException,
+    SocketTimeoutException,
+    ReceiveException,
+)
 
 LOG = getLogger(__name__)
 
@@ -40,27 +43,40 @@ class ParamikoSshConnection(BaseSshConnection):
     @property
     def connected(self):
         return bool(
-            self.socket and \
-            not self.socket._closed and \
-            self.session and \
-            self.channel
+            self.socket
+            and not self.socket._closed
+            and self.session
+            and self.channel
         )
 
     def send(self, line, socket_timeout=None):
-        socket_timeout = socket_timeout if socket_timeout is not None else self.socket_timeout
+        socket_timeout = (
+            socket_timeout
+            if socket_timeout is not None
+            else self.socket_timeout
+        )
         self.channel.settimeout(socket_timeout)
         size = self.channel.sendall(line + "\n")
         return size
 
-    def receive(self, regex=None, socket_timeout=None, timeout=None,
-                buffer_size=None):
+    def receive(
+        self, regex=None, socket_timeout=None, timeout=None, buffer_size=None
+    ):
         regex = regex if regex is not None else self.prompt_regex
-        socket_timeout = socket_timeout if socket_timeout is not None else self.socket_timeout
+        socket_timeout = (
+            socket_timeout
+            if socket_timeout is not None
+            else self.socket_timeout
+        )
         timeout = timeout if timeout is not None else self.timeout
-        buffer_size = buffer_size if buffer_size is not None else self.buffer_size
+        buffer_size = (
+            buffer_size if buffer_size is not None else self.buffer_size
+        )
 
         assert regex is not None
-        assert socket_timeout is None or isinstance(socket_timeout, (int, float))
+        assert socket_timeout is None or isinstance(
+            socket_timeout, (int, float)
+        )
         assert timeout is None or isinstance(timeout, (int, float))
         assert isinstance(buffer_size, int) and buffer_size > 0
 
@@ -70,9 +86,11 @@ class ParamikoSshConnection(BaseSshConnection):
         LOG.debug(output)
         size = len(output)
         duration = time() - start
-        while not regex.search(output) and \
-                (timeout is None or duration < timeout) \
-                and size > 0:
+        while (
+            not regex.search(output)
+            and (timeout is None or duration < timeout)
+            and size > 0
+        ):
             data = self.channel.recv(buffer_size).decode()
             LOG.debug(data)
             size = len(data)

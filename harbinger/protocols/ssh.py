@@ -7,14 +7,16 @@ from ssh2.session import Session
 
 from harbinger.base.ssh import BaseSshConnection
 from harbinger.exceptions import LIBSSH2_ERROR_EAGAIN
-from harbinger.exceptions import ReceiveTimeoutException, \
-    SocketTimeoutException, ReceiveException
+from harbinger.exceptions import (
+    ReceiveTimeoutException,
+    SocketTimeoutException,
+    ReceiveException,
+)
 
 LOG = getLogger(__name__)
 
 
 class SshConnection(BaseSshConnection):
-
     def connect(self, wait_prompt=True):
         self.socket = socket(AF_INET, SOCK_STREAM)
         self.socket.connect((self.hostname, self.port))
@@ -41,28 +43,41 @@ class SshConnection(BaseSshConnection):
     @property
     def connected(self):
         return bool(
-            self.socket and \
-            not self.socket._closed and \
-            self.session and \
-            self.channel and \
-            not self.channel.eof()
+            self.socket
+            and not self.socket._closed
+            and self.session
+            and self.channel
+            and not self.channel.eof()
         )
 
     def send(self, line, socket_timeout=None):
-        socket_timeout = socket_timeout if socket_timeout is not None else self.socket_timeout
+        socket_timeout = (
+            socket_timeout
+            if socket_timeout is not None
+            else self.socket_timeout
+        )
         size = self.channel.write(line + "\n")
         select([], [self.socket], [], socket_timeout)
         return size
 
-    def receive(self, regex=None, socket_timeout=None, timeout=None,
-                buffer_size=None):
+    def receive(
+        self, regex=None, socket_timeout=None, timeout=None, buffer_size=None
+    ):
         regex = regex if regex is not None else self.prompt_regex
-        socket_timeout = socket_timeout if socket_timeout is not None else self.socket_timeout
+        socket_timeout = (
+            socket_timeout
+            if socket_timeout is not None
+            else self.socket_timeout
+        )
         timeout = timeout if timeout is not None else self.timeout
-        buffer_size = buffer_size if buffer_size is not None else self.buffer_size
+        buffer_size = (
+            buffer_size if buffer_size is not None else self.buffer_size
+        )
 
         assert regex is not None
-        assert socket_timeout is None or isinstance(socket_timeout, (int, float))
+        assert socket_timeout is None or isinstance(
+            socket_timeout, (int, float)
+        )
         assert timeout is None or isinstance(timeout, (int, float))
         assert isinstance(buffer_size, int) and buffer_size > 0
 
@@ -76,10 +91,12 @@ class SshConnection(BaseSshConnection):
         output = data.decode()
         LOG.debug(output)
         duration = time() - start
-        while not regex.search(output) and \
-                (timeout is None or duration < timeout) \
-                and size > 0 \
-                and not self.channel.eof():
+        while (
+            not regex.search(output)
+            and (timeout is None or duration < timeout)
+            and size > 0
+            and not self.channel.eof()
+        ):
             select([self.socket], [], [], socket_timeout)
             size, data = self.channel.read()
             data = data.decode()

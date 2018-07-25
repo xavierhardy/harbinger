@@ -6,8 +6,11 @@ from telnetlib import Telnet
 from time import time
 
 from harbinger.base.shell import ShellConnection
-from harbinger.exceptions import ReceiveTimeoutException, SocketTimeoutException, \
-    ReceiveException
+from harbinger.exceptions import (
+    ReceiveTimeoutException,
+    SocketTimeoutException,
+    ReceiveException,
+)
 
 LOG = getLogger(__name__)
 LOG.setLevel(DEBUG)
@@ -43,20 +46,33 @@ class TelnetConnection(ShellConnection):
         return bool(self.socket and not self.socket._closed and self.session)
 
     def send(self, line, socket_timeout=None):
-        socket_timeout = socket_timeout if socket_timeout is not None else self.socket_timeout
+        socket_timeout = (
+            socket_timeout
+            if socket_timeout is not None
+            else self.socket_timeout
+        )
         self.socket.settimeout(socket_timeout)
         size = self.channel.write((line + "\n").encode())
         return size
 
-    def receive(self, regex=None, socket_timeout=None, timeout=None,
-                buffer_size=None):
+    def receive(
+        self, regex=None, socket_timeout=None, timeout=None, buffer_size=None
+    ):
         regex = regex if regex is not None else self.prompt_regex
-        socket_timeout = socket_timeout if socket_timeout is not None else self.socket_timeout
+        socket_timeout = (
+            socket_timeout
+            if socket_timeout is not None
+            else self.socket_timeout
+        )
         timeout = timeout if timeout is not None else self.timeout
-        buffer_size = buffer_size if buffer_size is not None else self.buffer_size
+        buffer_size = (
+            buffer_size if buffer_size is not None else self.buffer_size
+        )
 
         assert regex is not None
-        assert socket_timeout is None or isinstance(socket_timeout, (int, float))
+        assert socket_timeout is None or isinstance(
+            socket_timeout, (int, float)
+        )
         assert timeout is None or isinstance(timeout, (int, float))
         assert isinstance(buffer_size, int) and buffer_size > 0
 
@@ -66,9 +82,11 @@ class TelnetConnection(ShellConnection):
         LOG.debug(output)
         size = len(output)
         duration = time() - start
-        while not regex.search(output) and \
-                (timeout is None or duration < timeout) \
-                and size > 0:
+        while (
+            not regex.search(output)
+            and (timeout is None or duration < timeout)
+            and size > 0
+        ):
             data = self.channel.read_some().decode()
             LOG.debug(data)
             size = len(data)
