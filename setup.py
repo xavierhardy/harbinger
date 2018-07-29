@@ -13,6 +13,7 @@ setup(
     url="https://github.com/xavierhardy/harbinger",
     packages=[],
     extras_require={
+        "docs": ["sphinx"],
         "paramiko": ["paramiko==2.4.1"],
         "ssh2": ["ssh2-python==0.15.0.post9"],
     },
