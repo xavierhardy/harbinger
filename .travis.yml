@@ -7,12 +7,17 @@ python:
   - "3.6"
 
 install:
+  - if [[ "$TRAVIS_PYTHON_VERSION" == "3.6" ]]; then pip install black; fi
   - pip install -r requirements/dev.txt
   - python setup.py install
   - pip install .[ssh2]
   - pip install .[paramiko]
 
 script:
+  - |
+    if [[ "$TRAVIS_PYTHON_VERSION" == "3.6" ]]; then
+      black --exclude harbinger/exception --check --diff -l 79 *.py harbinger
+    fi
   - yamllint .travis.yml
   - flake8 *.py harbinger
   - nosetests
