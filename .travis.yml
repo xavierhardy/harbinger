@@ -1,0 +1,18 @@
+---
+language: python
+python:
+  - "2.7"
+  - "3.4"
+  - "3.5"
+  - "3.6"
+
+install:
+  - pip install -r requirements/dev.txt
+  - python setup.py install
+  - pip install .[ssh2]
+  - pip install .[paramiko]
+
+script:
+  - yamllint .travis.yml
+  - flake8 *.py harbinger
+  - nosetests
