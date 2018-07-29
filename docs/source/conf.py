@@ -28,6 +28,8 @@ version = ""
 # The full version, including alpha/beta/rc tags
 release = ""
 
+html_logo = "images/logo.png"
+html_favicon = "images/favicon.ico"
 
 # -- General configuration ---------------------------------------------------
 

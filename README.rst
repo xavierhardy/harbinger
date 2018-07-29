@@ -3,6 +3,8 @@ Harbinger
 
 Abstract transport to connect to remote servers with performance in mind
 
+.. image:: docs/source/images/logo_256.png
+
 Tests
 -----
 
