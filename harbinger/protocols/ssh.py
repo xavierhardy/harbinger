@@ -120,6 +120,8 @@ class SshConnection(BaseSshConnection):
         return self.sanitize(output)
 
     def disconnect(self):
-        self.channel.close()
-        self.channel.wait_closed()
-        self.socket.close()
+        if self.channel:
+            self.channel.close()
+            self.channel.wait_closed()
+        if self.socket:
+            self.socket.close()

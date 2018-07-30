@@ -1,7 +1,6 @@
 import re
-from logging import getLogger, DEBUG, StreamHandler
+from logging import getLogger
 from socket import _GLOBAL_DEFAULT_TIMEOUT
-from sys import stdout
 from telnetlib import Telnet
 from time import time
 
@@ -13,10 +12,6 @@ from harbinger.exceptions import (
 )
 
 LOG = getLogger(__name__)
-LOG.setLevel(DEBUG)
-handler = StreamHandler(stdout)
-handler.setLevel(DEBUG)
-LOG.addHandler(handler)
 
 LOGIN_REGEX = re.compile("login\s*:", re.I)
 PASSWORD_REGEX = re.compile("password\s*:", re.I)
@@ -109,5 +104,8 @@ class TelnetConnection(ShellConnection):
         return self.sanitize(output)
 
     def disconnect(self):
-        self.session.close()
-        self.socket.close()
+        if self.session:
+            self.session.close()
+
+        if self.socket:
+            self.socket.close()

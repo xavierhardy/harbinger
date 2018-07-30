@@ -113,6 +113,11 @@ class ParamikoSshConnection(BaseSshConnection):
         return self.sanitize(output)
 
     def disconnect(self):
-        self.session.close()
-        self.channel.close()
-        self.socket.close()
+        if self.session:
+            self.session.close()
+
+        if self.channel:
+            self.channel.close()
+
+        if self.socket:
+            self.socket.close()

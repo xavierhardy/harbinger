@@ -17,7 +17,7 @@ class BaseSshConnection(ShellConnection):
         password=None,
         timeout=None,
         socket_timeout=None,
-        prompt="^.*?@.*?(#|$) ",
+        prompt="^.*?@.*?[#$] ",
         buffer_size=DEFAULT_BUFFER_SIZE,
         public_key_file=None,
         private_key_file=None,
@@ -41,7 +41,7 @@ class BaseSshConnection(ShellConnection):
 
         self.socket_timeout = socket_timeout
         self.prompt = prompt
-        self.prompt_regex = re.compile(prompt, re.I)
+        self.prompt_regex = re.compile(prompt, re.I | re.M)
         self.public_key_file = public_key_file
         self.private_key_file = private_key_file
         self.key_passphrase = key_passphrase
