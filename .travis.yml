@@ -20,5 +20,6 @@ script:
     fi
   - yamllint .travis.yml
   - flake8 *.py harbinger docs
-  - nosetests
+  - nosetests --with-coverage --cover-min-percentage=30
+              --cover-package=harbinger --cover-inclusive
   - make -C docs html

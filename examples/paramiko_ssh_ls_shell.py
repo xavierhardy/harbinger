@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from harbinger.protocols.paramiko import ParamikoSshConnection
+from harbinger.protocols.paramiko_ssh import ParamikoSshConnection
 
 from sys import version_info
 from getpass import getpass
